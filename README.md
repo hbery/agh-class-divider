@@ -50,4 +50,3 @@ Projekt zakłada stworzenie aplikacji webowej służącej do podziału studentó
 ## Zestawy testowe
 
 Znajdują się w katalogu `tests/data/suite_{1..3}`
-
