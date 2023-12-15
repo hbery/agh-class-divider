@@ -1,8 +1,8 @@
 # AGH Class Divider
 
-## Projekt realizowany na przedmiot "Metodyki Projektów Teleinformatycznych" w roku 2022/2023
+Projekt realizowany na przedmiot "Metodyki Projektów Teleinformatycznych" w roku 2022/2023
 
-### Twórcy ✨
+## Twórcy ✨
 
 <table>
   <tbody>
@@ -20,23 +20,33 @@
   </tbody>
 </table>
 
-### Opis projektu 📚
+## Opis projektu 📚
 
 Projekt zakłada stworzenie aplikacji webowej służącej do podziału studentów na grupy zajęciowe według zgłoszonych preferencji za pomocą formularza - użyte zewnętrzne narzędzia. Zestaw preferencji jest eksportowany do formatu .csv, który następnie jest możliwy do wgrania na aplikację. Aplikacja za pomocą autorskiego algorytmu dokonuje przydziałów studenta do slotów zajęciowych, tak by w jak największym stopniu trspełnić jego preferencje. Ostatecznie osoba korzystająca z aplikacji otrzymuje plik .csv z przydziałem każdego studenta do grupy zajęciowej.
 
-### Użyte technologie i języki
+## Użyte technologie i języki
 
-#### Frontend
+### Frontend
 
 - React JS
 
-#### Backend
+### Backend
 
 - Python
 - Fast Api
 
-#### Środowisko wirtualizacyjne
+### Środowisko wirtualizacyjne
 
 - Docker
 
-### WorkFlow projektu
+## WorkFlow projektu
+
+* [tutaj](_docs/WORKFLOW.md)
+
+## Opis algorytmu/modelu matematycznego
+
+* [tutaj](/_docs/ENGINE_MODEL.md)
+
+## Zestawy testowe
+
+Znajdują się w katalogu `tests/data/suite_{1..3}`
