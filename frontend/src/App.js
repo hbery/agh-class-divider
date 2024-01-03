@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MainPage from './components/MainPage/MainPage';
 
 function App() {
-  const [message, setMessage] = useState();
 
   useEffect(() => {
     fetch('http://localhost:8000/')
@@ -12,7 +13,7 @@ function App() {
         }
         return response.json();
       })
-      .then(data => setMessage(data.Hello))
+      .then(console.log("Success"))
       .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
       });
@@ -20,11 +21,11 @@ function App() {
 
 
   return (
-    <div className="App">
-      <header className="App-header">
-        {message ? message : 'Ładowanie...'}
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+      </Routes>
+    </Router>
   );
 }
 
