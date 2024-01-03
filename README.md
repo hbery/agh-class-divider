@@ -41,11 +41,15 @@ Projekt zakłada stworzenie aplikacji webowej służącej do podziału studentó
 
 ## WorkFlow projektu
 
-* [tutaj](_docs/WORKFLOW.md)
+- [tutaj](_docs/WORKFLOW.md)
 
 ## Opis algorytmu/modelu matematycznego
 
-* [tutaj](/_docs/ENGINE_MODEL.md)
+- [tutaj](/_docs/ENGINE_MODEL.md)
+
+## Uruchomienie aplikacji
+
+Całość aplikacji podzielona jest na dwa kontenery dockerowe, odpowiednio jeden dla Frontend i jeden dla Backend. Plik konfigurujący całe środowisko znajduje się w pliku `docker-compose.yml`, który pozwala na uruchomienie aplikacji za pomocą komendy `docker-compose up` będąc w zasięgu pliku. Komenda wystawia na porcie lokalnym `3000`, możliwość podłączenia się do strony www aplikacji.
 
 ## Zestawy testowe
 
