@@ -51,6 +51,9 @@ Projekt zakłada stworzenie aplikacji webowej służącej do podziału studentó
 
 Całość aplikacji podzielona jest na dwa kontenery dockerowe, odpowiednio jeden dla Frontend i jeden dla Backend. Plik konfigurujący całe środowisko znajduje się w pliku `docker-compose.yml`, który pozwala na uruchomienie aplikacji za pomocą komendy `docker-compose up` będąc w zasięgu pliku. Komenda wystawia na porcie lokalnym `3000`, możliwość podłączenia się do strony www aplikacji.
 
+- [instalacja Docker](https://docs.docker.com/get-docker/)
+- [instalacja Docker compose](https://docs.docker.com/compose/install/)
+
 ## Zestawy testowe
 
 Znajdują się w katalogu `tests/data/suite_{1..3}`
