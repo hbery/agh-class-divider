@@ -1,16 +1,14 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+
+from .routers import jobs, schedule, preferences, results
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Pozwala na wszystkie źródła
-    allow_credentials=True,
-    allow_methods=["*"],  # Pozwala na wszystkie metody
-    allow_headers=["*"],  # Pozwala na wszystkie nagłówki
-)
+app.include_router(jobs.router)
+app.include_router(schedule.router)
+app.include_router(preferences.router)
+app.include_router(results.router)
 
 @app.get("/")
-def read_root():
+async def get_base():
     return {"Hello": "World"}
