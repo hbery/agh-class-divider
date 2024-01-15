@@ -1,3 +1,7 @@
 fastapi
 uvicorn
 fastapi-cors
+pandas
+numpy
+pulp
+python-dateutil
