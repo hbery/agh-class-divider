@@ -2,12 +2,20 @@ version: '3.8'
 services:
   react:
     build: ./frontend
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
     depends_on:
       - fastapi
 
   fastapi:
     build: ./backend
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend:/app
