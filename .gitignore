@@ -184,7 +184,6 @@ frontend/*.iml
 frontend/.vscode
 frontend/*.swp
 frontend/*.swo
-frontend/
 frontend/packages/react-devtools-core/dist
 frontend/packages/react-devtools-extensions/chrome/build
 frontend/packages/react-devtools-extensions/chrome/*.crx
