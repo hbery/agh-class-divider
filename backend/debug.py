@@ -39,6 +39,12 @@ if __name__ == "__main__":
         "-s", "--test-solution", action="store_true", help="test model solution"
     )
     parser.add_argument(
+        "-m",
+        "--test-machine-solution",
+        action="store_true",
+        help="test model machine output solution",
+    )
+    parser.add_argument(
         "-S", "--test-suite", action="store", default=1, help="choose test suite"
     )
     parser.add_argument(
@@ -67,7 +73,7 @@ if __name__ == "__main__":
     students_df = (
         read_csv(
             path.joinpath(
-                test_suite, "podzial{args.test_suite}_{args.test_option}.csv"
+                test_suite, f"podzial{args.test_suite}_{args.test_option}.csv"
             ),
             sep=";",
             lineterminator="\r",
@@ -88,8 +94,14 @@ if __name__ == "__main__":
         pprint(students)
         pprint(groups)
 
-    if args.test_creation or args.test_solution or args.test_saving:
+    if (
+        args.test_creation
+        or args.test_solution
+        or args.test_saving
+        or args.test_machine_solution
+    ):
         model = ClassDivider(students, groups)
+        # print(model.model.group_to_student)
 
         if args.test_saving:
             model_bsons = model.serialize()
@@ -115,6 +127,13 @@ if __name__ == "__main__":
         status = model.solve()
         if status == 1:
             print(f"Model solved and is {LpStatus[status]}!")
+            if args.test_machine_solution:
+                # model.extract_results_beautified()
+                # dt = model.get_results_dict()
+                model.extract_results()
+                dt = model.get_results()
+                pprint(dt)
+
             if args.test_solution:
                 show_classes_per_student(model.model, students, groups)
         else:
