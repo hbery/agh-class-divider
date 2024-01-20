@@ -5,3 +5,8 @@ pandas
 numpy
 pulp
 python-dateutil
+dbml_sqlite
+sqlalchemy
+bson
+python-multipart
+fastapi-logger
