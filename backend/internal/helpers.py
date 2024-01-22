@@ -2,9 +2,10 @@
 # vim: ts=4 : sts=4 : sw=4 : et : ai :
 
 from __future__ import annotations
-from typing import TYPE_CHECKING
 
 from datetime import datetime
+from typing import TYPE_CHECKING
+
 from dateutil import parser
 
 if TYPE_CHECKING:
@@ -13,24 +14,24 @@ if TYPE_CHECKING:
 
 def parse_schedule_time(time_str: str) -> tuple[datetime, datetime]:
     day_mapping = {
-        'Pon.': 'Monday',
-        'Wt.': 'Tuesday',
-        'Sr.': 'Wednesday',
-        'Czw.': 'Thursday',
-        'Pt.': 'Friday',
-        'Sob.': 'Saturday',
-        'Ndz.': 'Sunday'
+        "Pon.": "Monday",
+        "Wt.": "Tuesday",
+        "Sr.": "Wednesday",
+        "Czw.": "Thursday",
+        "Pt.": "Friday",
+        "Sob.": "Saturday",
+        "Ndz.": "Sunday",
     }
 
-    day, times = time_str.split(' ')
-    english_day = day_mapping.get(day, 'Unknown')
+    day, times = time_str.split(" ")
+    english_day = day_mapping.get(day, "Unknown")
 
-    start_time, end_time = times.split('-')
-    start_time_full = f'{start_time}:00'
-    end_time_full = f'{end_time}:00'
+    start_time, end_time = times.split("-")
+    start_time_full = f"{start_time}:00"
+    end_time_full = f"{end_time}:00"
 
-    start_slot = parser.parse(f'{english_day} {start_time_full}')
-    end_slot = parser.parse(f'{english_day} {end_time_full}')
+    start_slot = parser.parse(f"{english_day} {start_time_full}")
+    end_slot = parser.parse(f"{english_day} {end_time_full}")
 
     return start_slot, end_slot
 
@@ -39,7 +40,7 @@ def create_weight_matrix(
     students: list[Student],
     groups: list[Group],
     weight_wanted: int = 500,
-    weight_unwanted: int = 0
+    weight_unwanted: int = 0,
 ) -> dict[int, dict[int, int]]:
     weight = {}
     for s in students:
