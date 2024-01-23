@@ -10,7 +10,6 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /srv/db
-COPY extra/favicon.png /srv/icon.png
 
 WORKDIR /app
 
