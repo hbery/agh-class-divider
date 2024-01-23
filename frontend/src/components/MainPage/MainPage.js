@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import axios from 'axios';
 import {
     AppContainer,
     MainPageWrapper,
@@ -40,6 +41,8 @@ const MainPage = () => {
     const [selectedScheduleFile, setSelectedScheduleFile] = useState(null);
     const [selectedGroupFile, setSelectedGroupFile] = useState(null);
     const [confirmationState, setConfirmationState] = useState(false);
+    const [jobId, setJobId] = useState(null);
+    const BASE_URL = "http://192.168.254.20:8000";
 
     const handleSelectScheduleFile = () => {
         scheduleFileInputRef.current.click();
@@ -63,10 +66,55 @@ const MainPage = () => {
         console.log('Selected Group File:', file);
     };
 
-    const handleConfirmButtonClick = () => {
+    const handleConfirmButtonClick = async () => {
         if (selectedScheduleFile && selectedGroupFile) {
-            setConfirmationState(true);
-            console.log('Confirm Button Clicked');
+            try {
+                // Step 1: Create a job
+                const createJobResponse = await axios.post(`${BASE_URL}/jobs/create`);
+                const jobId = createJobResponse.data.job_id;
+                setJobId(jobId); // Store the job_id in the state
+
+                // Step 2: Upload schedule file
+                const scheduleFormData = new FormData();
+                scheduleFormData.append('file', selectedScheduleFile);
+                await axios.post(`${BASE_URL}/schedule/file?jobid=${jobId}`, scheduleFormData);
+
+                // Step 3: Upload group file
+                const groupFormData = new FormData();
+                groupFormData.append('file', selectedGroupFile);
+                await axios.post(`${BASE_URL}/preferences/file?jobid=${jobId}`, groupFormData);
+
+                // Step 4: Prepare model
+                await axios.post(`${BASE_URL}/jobs/${jobId}/prepare`);
+
+                // Step 5: Run the model
+                await axios.post(`${BASE_URL}/jobs/${jobId}/run`);
+
+                // Step 6: Download results
+                const downloadResponse = await axios.get(`${BASE_URL}/results/${jobId}/schedule/file`, { responseType: 'blob' });
+
+                // Step 7: Save the downloaded file
+                const blob = new Blob([downloadResponse.data], { type: 'application/octet-stream' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `test-${jobId}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                // Update confirmation state
+                setConfirmationState(true);
+            } catch (error) {
+                console.error('Error:', error);
+
+                if (axios.isAxiosError(error)) {
+                    // Axios specific error handling
+                    console.error('Axios error details:', error.response);
+                }
+
+                window.alert('An error occurred during the API calls.');
+            }
         } else {
             window.alert('Please select both files before continuing.');
         }
@@ -74,9 +122,35 @@ const MainPage = () => {
 
     const isConfirmButtonActive = selectedScheduleFile && selectedGroupFile;
 
-    const handleDownloadClick = () => {
-        // Implement logic to trigger download
-        console.log('Download Button Clicked');
+    const handleDownloadClick = async () => {
+        try {
+            if (jobId) {
+                // Step 1: Make a GET request to download the file using the stored job_id
+                const downloadResponse = await axios.get(`${BASE_URL}/results/${jobId}/schedule/file`, { responseType: 'blob' });
+
+                // Step 2: Create a Blob from the downloaded data
+                const blob = new Blob([downloadResponse.data], { type: 'application/octet-stream' });
+
+                // Step 3: Create a URL for the Blob
+                const url = window.URL.createObjectURL(blob);
+
+                // Step 4: Create an anchor element and trigger the download
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `test-${jobId}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                // Optionally, you can revoke the Blob URL to free up resources
+                window.URL.revokeObjectURL(url);
+            } else {
+                window.alert('Job ID not available. Please confirm the job first.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            window.alert('An error occurred while downloading the file.');
+        }
     };
 
     const handleRetryClick = () => {
@@ -109,60 +183,60 @@ const MainPage = () => {
                     </DownloadWrapper>
                 ) : (
                     <MainPageWrapper>
-                    <SelectFileWrapper>
-                        <SelectScheduleWrapper>
-                            <ScheduleIcon src={schedule} alt="Schedule file" />
-                            <SelectFileTitle>Wybierz plik z planem zajęć</SelectFileTitle>
-                            <FileInputContainer>
-                                <AttachmentIcon alt="Attachment icon" />
-                                <input
-                                    type="file"
-                                    accept=".xlsx"
-                                    style={{ display: 'none' }}
-                                    ref={scheduleFileInputRef}
-                                    onChange={handleScheduleFileChange}
-                                />
-                                {selectedScheduleFile && (
-                                    <SelectedFileName>
-                                        {selectedScheduleFile.name.slice(0, 20)}{selectedScheduleFile.name.length > 20 ? '...' : ''}
-                                    </SelectedFileName>
-                                )}
-                            </FileInputContainer>
-                        </SelectScheduleWrapper>
-                        <SelectGroupWrapper>
-                            <GroupIcon src={group} alt="Group file" />
-                            <SelectFileTitle>Wybierz plik z danymi studentów</SelectFileTitle>
-                            <FileInputContainer>
-                                <AttachmentIcon alt="Attachment icon" />
-                                <input
-                                    type="file"
-                                    accept=".xlsx"
-                                    style={{ display: 'none' }}
-                                    ref={groupFileInputRef}
-                                    onChange={handleGroupFileChange}
-                                />
-                                {selectedGroupFile && (
-                                    <SelectedFileName>{selectedGroupFile.name.slice(0, 20)}{selectedGroupFile.name.length > 20 ? '...' : ''}</SelectedFileName>
-                                )}
-                            </FileInputContainer>
-                        </SelectGroupWrapper>
-                    </SelectFileWrapper>
-                    <ConfirmButtonWrapper>
-                    <ConfirmButton
-                        onClick={handleConfirmButtonClick}
-                        disabled={!isConfirmButtonActive}
-                        style={{
-                            cursor: isConfirmButtonActive ? 'pointer' : 'not-allowed',
-                            opacity: isConfirmButtonActive ? 1 : 0.5,
-                        }}
-                    >
-                        Kontynuuj
-                    </ConfirmButton>
-                </ConfirmButtonWrapper> 
-                </MainPageWrapper>   
+                        <SelectFileWrapper>
+                            <SelectScheduleWrapper>
+                                <ScheduleIcon src={schedule} alt="Schedule file" />
+                                <SelectFileTitle>Wybierz plik z planem zajęć</SelectFileTitle>
+                                <FileInputContainer>
+                                    <AttachmentIcon alt="Attachment icon" />
+                                    <input
+                                        type="file"
+                                        accept=".csv"
+                                        style={{ display: 'none' }}
+                                        ref={scheduleFileInputRef}
+                                        onChange={handleScheduleFileChange}
+                                    />
+                                    {selectedScheduleFile && (
+                                        <SelectedFileName>
+                                            {selectedScheduleFile.name.slice(0, 20)}{selectedScheduleFile.name.length > 20 ? '...' : ''}
+                                        </SelectedFileName>
+                                    )}
+                                </FileInputContainer>
+                            </SelectScheduleWrapper>
+                            <SelectGroupWrapper>
+                                <GroupIcon src={group} alt="Group file" />
+                                <SelectFileTitle>Wybierz plik z danymi studentów</SelectFileTitle>
+                                <FileInputContainer>
+                                    <AttachmentIcon alt="Attachment icon" />
+                                    <input
+                                        type="file"
+                                        accept=".csv"
+                                        style={{ display: 'none' }}
+                                        ref={groupFileInputRef}
+                                        onChange={handleGroupFileChange}
+                                    />
+                                    {selectedGroupFile && (
+                                        <SelectedFileName>{selectedGroupFile.name.slice(0, 20)}{selectedGroupFile.name.length > 20 ? '...' : ''}</SelectedFileName>
+                                    )}
+                                </FileInputContainer>
+                            </SelectGroupWrapper>
+                        </SelectFileWrapper>
+                        <ConfirmButtonWrapper>
+                            <ConfirmButton
+                                onClick={handleConfirmButtonClick}
+                                disabled={!isConfirmButtonActive}
+                                style={{
+                                    cursor: isConfirmButtonActive ? 'pointer' : 'not-allowed',
+                                    opacity: isConfirmButtonActive ? 1 : 0.5,
+                                }}
+                            >
+                                Kontynuuj
+                            </ConfirmButton>
+                        </ConfirmButtonWrapper>
+                    </MainPageWrapper>
                 )}
-                        
-                </MainPageWrapper>
+
+            </MainPageWrapper>
         </AppContainer>
     );
 };
