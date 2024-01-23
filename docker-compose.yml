@@ -12,10 +12,6 @@ services:
       - ./frontend/public:/app/public
     depends_on:
       - fastapi
-    networks:
-      default:
-      net_internal:
-        ipv4_address: 192.168.254.10
 
   fastapi:
     build: ./backend
@@ -26,14 +22,3 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-    networks:
-      default:
-      net_internal:
-        ipv4_address: 192.168.254.20
-
-networks:
-  net_internal:
-    internal: true
-    ipam:
-      config:
-        - subnet: 192.168.254.0/24
