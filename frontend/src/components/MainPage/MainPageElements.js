@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { GrAttachment } from "react-icons/gr";
 import { PiDownloadSimpleLight } from "react-icons/pi";
 import { VscRefresh } from "react-icons/vsc";
+import { RiLoader2Line } from "react-icons/ri";
+
 
 export const AppContainer = styled.div`
   display: flex;
@@ -40,7 +42,7 @@ export const SelectFileWrapper = styled.div`
   margin-bottom: 20px;
   gap: 3em;
   padding: 1em;
-  
+
 `;
 
 export const SelectFileTitle = styled.p`
@@ -141,7 +143,7 @@ export const SelectedFileNameWrapper = styled.div`
 
 export const SelectedFileName = styled.p`
   width: 100%;
-  text-align: center;  
+  text-align: center;
   white-space: pre-line;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -209,7 +211,7 @@ export const DownloadButton = styled.button`
   &:hover, &:focus {
         background-color: #129683;
     }
-  
+
 `;
 
 export const DownloadTitle = styled.p`
@@ -219,7 +221,7 @@ export const DownloadTitle = styled.p`
   /* font-size: clamp(1.1em, 1vh, 1.3em); */
   font-size: 1.1em;
   color: #26190a;
-  white-space: pre-line; 
+  white-space: pre-line;
 `;
 
 export const SuccessImage = styled.img`
@@ -230,7 +232,7 @@ export const SuccessImage = styled.img`
 export const DownloadIcon = styled(PiDownloadSimpleLight)`
   margin-right: 0.5em;
   width: 25px;
-  height: 25px;   
+  height: 25px;
 `;
 
 export const DownloadButtonsWrapper = styled.div`
@@ -267,4 +269,18 @@ export const RetryButton = styled.button`
 export const RetryIcon = styled(VscRefresh)`
     width: 20px;
     height: 20px;
+`;
+
+
+export const LoadingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+`;
+
+export const LoadingIcon = styled(RiLoader2Line)`
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
 `;

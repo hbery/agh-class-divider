@@ -27,7 +27,9 @@ import {
     DownloadTitle,
     RetryButton,
     RetryIcon,
-    DownloadButtonsWrapper
+    DownloadButtonsWrapper,
+    LoadingWrapper,
+    LoadingIcon
 } from './MainPageElements';
 import schedule from '../../images/schedule.png';
 import group from '../../images/group.png';
@@ -42,7 +44,10 @@ const MainPage = () => {
     const [selectedGroupFile, setSelectedGroupFile] = useState(null);
     const [confirmationState, setConfirmationState] = useState(false);
     const [jobId, setJobId] = useState(null);
-    const BASE_URL = "http://192.168.254.20:8000";
+    const BASE_URL = "http://127.0.0.1:8000";
+
+    const [loading, setLoading] = useState(false);
+
 
     const handleSelectScheduleFile = () => {
         scheduleFileInputRef.current.click();
@@ -69,6 +74,9 @@ const MainPage = () => {
     const handleConfirmButtonClick = async () => {
         if (selectedScheduleFile && selectedGroupFile) {
             try {
+                setLoading(true);
+
+
                 // Step 1: Create a job
                 const createJobResponse = await axios.post(`${BASE_URL}/jobs/create`);
                 const jobId = createJobResponse.data.job_id;
@@ -105,8 +113,13 @@ const MainPage = () => {
 
                 // Update confirmation state
                 setConfirmationState(true);
+
+                setLoading(false);
             } catch (error) {
                 console.error('Error:', error);
+
+                setLoading(false);
+
 
                 if (axios.isAxiosError(error)) {
                     // Axios specific error handling
@@ -163,81 +176,86 @@ const MainPage = () => {
                 <LogoWrapper>
                     <Logo src={logo} alt="Class Divider" />
                 </LogoWrapper>
-                {confirmationState ? (
+                {loading ? (
+                    <LoadingWrapper>
+                        <LoadingIcon />
+                        <SelectFileTitle>Tworzenie pliku</SelectFileTitle>
+                    </LoadingWrapper>
+                ) : confirmationState ? (
                     <DownloadWrapper>
-                        <SuccessMessageWrapper>
-                            <SuccessImage src={success} alt="Success!" />
-                            <DownloadTitle>
-                                <strong>Udało się!</strong>{'\n'}Plik z gotowym podziałem jest gotowy do pobrania.
-                            </DownloadTitle>
-                            <DownloadButtonsWrapper>
-                                <DownloadButton onClick={handleDownloadClick}>
-                                    <DownloadIcon />
-                                    Pobierz plik
-                                </DownloadButton>
-                                <RetryButton onClick={handleRetryClick}>
-                                    <RetryIcon />
-                                </RetryButton>
-                            </DownloadButtonsWrapper>
-                        </SuccessMessageWrapper>
+                    <SuccessMessageWrapper>
+                        <SuccessImage src={success} alt="Success!" />
+                        <DownloadTitle>
+                            <strong>Udało się!</strong>{'\n'}Plik z gotowym podziałem jest gotowy do pobrania.
+                        </DownloadTitle>
+                        <DownloadButtonsWrapper>
+                            <DownloadButton onClick={handleDownloadClick}>
+                                <DownloadIcon />
+                                Pobierz plik
+                            </DownloadButton>
+                            <RetryButton onClick={handleRetryClick}>
+                                <RetryIcon />
+                            </RetryButton>
+                        </DownloadButtonsWrapper>
+                    </SuccessMessageWrapper>
                     </DownloadWrapper>
-                ) : (
-                    <MainPageWrapper>
-                        <SelectFileWrapper>
-                            <SelectScheduleWrapper>
-                                <ScheduleIcon src={schedule} alt="Schedule file" />
-                                <SelectFileTitle>Wybierz plik z planem zajęć</SelectFileTitle>
-                                <FileInputContainer>
-                                    <AttachmentIcon alt="Attachment icon" />
-                                    <input
-                                        type="file"
-                                        accept=".csv"
-                                        style={{ display: 'none' }}
-                                        ref={scheduleFileInputRef}
-                                        onChange={handleScheduleFileChange}
-                                    />
-                                    {selectedScheduleFile && (
-                                        <SelectedFileName>
-                                            {selectedScheduleFile.name.slice(0, 20)}{selectedScheduleFile.name.length > 20 ? '...' : ''}
-                                        </SelectedFileName>
-                                    )}
-                                </FileInputContainer>
-                            </SelectScheduleWrapper>
-                            <SelectGroupWrapper>
-                                <GroupIcon src={group} alt="Group file" />
-                                <SelectFileTitle>Wybierz plik z danymi studentów</SelectFileTitle>
-                                <FileInputContainer>
-                                    <AttachmentIcon alt="Attachment icon" />
-                                    <input
-                                        type="file"
-                                        accept=".csv"
-                                        style={{ display: 'none' }}
-                                        ref={groupFileInputRef}
-                                        onChange={handleGroupFileChange}
-                                    />
-                                    {selectedGroupFile && (
-                                        <SelectedFileName>{selectedGroupFile.name.slice(0, 20)}{selectedGroupFile.name.length > 20 ? '...' : ''}</SelectedFileName>
-                                    )}
-                                </FileInputContainer>
-                            </SelectGroupWrapper>
-                        </SelectFileWrapper>
-                        <ConfirmButtonWrapper>
-                            <ConfirmButton
-                                onClick={handleConfirmButtonClick}
-                                disabled={!isConfirmButtonActive}
-                                style={{
-                                    cursor: isConfirmButtonActive ? 'pointer' : 'not-allowed',
-                                    opacity: isConfirmButtonActive ? 1 : 0.5,
-                                }}
-                            >
-                                Kontynuuj
-                            </ConfirmButton>
-                        </ConfirmButtonWrapper>
-                    </MainPageWrapper>
+            ) : (
+            <MainPageWrapper>
+                <SelectFileWrapper>
+                    <SelectScheduleWrapper>
+                        <ScheduleIcon src={schedule} alt="Schedule file" />
+                        <SelectFileTitle>Wybierz plik z planem zajęć</SelectFileTitle>
+                        <FileInputContainer>
+                            <AttachmentIcon alt="Attachment icon" />
+                            <input
+                                type="file"
+                                accept=".csv"
+                                style={{ display: 'none' }}
+                                ref={scheduleFileInputRef}
+                                onChange={handleScheduleFileChange}
+                            />
+                            {selectedScheduleFile && (
+                                <SelectedFileName>
+                                    {selectedScheduleFile.name.slice(0, 20)}{selectedScheduleFile.name.length > 20 ? '...' : ''}
+                                </SelectedFileName>
+                            )}
+                        </FileInputContainer>
+                    </SelectScheduleWrapper>
+                    <SelectGroupWrapper>
+                        <GroupIcon src={group} alt="Group file" />
+                        <SelectFileTitle>Wybierz plik z danymi studentów</SelectFileTitle>
+                        <FileInputContainer>
+                            <AttachmentIcon alt="Attachment icon" />
+                            <input
+                                type="file"
+                                accept=".csv"
+                                style={{ display: 'none' }}
+                                ref={groupFileInputRef}
+                                onChange={handleGroupFileChange}
+                            />
+                            {selectedGroupFile && (
+                                <SelectedFileName>{selectedGroupFile.name.slice(0, 20)}{selectedGroupFile.name.length > 20 ? '...' : ''}</SelectedFileName>
+                            )}
+                        </FileInputContainer>
+                    </SelectGroupWrapper>
+                </SelectFileWrapper>
+                <ConfirmButtonWrapper>
+                    <ConfirmButton
+                        onClick={handleConfirmButtonClick}
+                        disabled={!isConfirmButtonActive}
+                        style={{
+                            cursor: isConfirmButtonActive ? 'pointer' : 'not-allowed',
+                            opacity: isConfirmButtonActive ? 1 : 0.5,
+                        }}
+                    >
+                        Kontynuuj
+                    </ConfirmButton>
+                </ConfirmButtonWrapper>
+            </MainPageWrapper>
                 )}
 
-            </MainPageWrapper>
-        </AppContainer>
+        </MainPageWrapper>
+        </AppContainer >
     );
 };
 
