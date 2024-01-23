@@ -7,6 +7,7 @@ from sys import exit
 
 from database.connection import create_database
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from routers.jobs import job_router
@@ -38,6 +39,15 @@ def openapi_settings():
     return app.openapi_schema
 
 
+origins = [
+    "https://192.168.254.20:8000",
+    "https://127.0.0.1:8000",
+    "http://localhost:8000",
+    "https://192.168.254.10:3000",
+    "https://127.0.0.1:3000",
+    "http://localhost:3000",
+]
+
 app = FastAPI()
 
 app.include_router(job_router)
@@ -46,6 +56,14 @@ app.include_router(pref_router)
 app.include_router(res_router)
 
 app.openapi = openapi_settings
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
