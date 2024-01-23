@@ -29,7 +29,8 @@ import {
     RetryIcon,
     DownloadButtonsWrapper,
     LoadingWrapper,
-    LoadingIcon
+    LoadingIcon,
+    LoadingTitle
 } from './MainPageElements';
 import schedule from '../../images/schedule.png';
 import group from '../../images/group.png';
@@ -76,7 +77,6 @@ const MainPage = () => {
             try {
                 setLoading(true);
 
-
                 // Step 1: Create a job
                 const createJobResponse = await axios.post(`${BASE_URL}/jobs/create`);
                 const jobId = createJobResponse.data.job_id;
@@ -98,19 +98,6 @@ const MainPage = () => {
                 // Step 5: Run the model
                 await axios.post(`${BASE_URL}/jobs/${jobId}/run`);
 
-                // Step 6: Download results
-                const downloadResponse = await axios.get(`${BASE_URL}/results/${jobId}/schedule/file`, { responseType: 'blob' });
-
-                // Step 7: Save the downloaded file
-                const blob = new Blob([downloadResponse.data], { type: 'application/octet-stream' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `test-${jobId}.csv`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
                 // Update confirmation state
                 setConfirmationState(true);
 
@@ -119,7 +106,6 @@ const MainPage = () => {
                 console.error('Error:', error);
 
                 setLoading(false);
-
 
                 if (axios.isAxiosError(error)) {
                     // Axios specific error handling
@@ -179,7 +165,7 @@ const MainPage = () => {
                 {loading ? (
                     <LoadingWrapper>
                         <LoadingIcon />
-                        <SelectFileTitle>Tworzenie pliku</SelectFileTitle>
+                        <LoadingTitle>Tworzenie pliku...</LoadingTitle>
                     </LoadingWrapper>
                 ) : confirmationState ? (
                     <DownloadWrapper>

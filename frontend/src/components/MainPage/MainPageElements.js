@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import { GrAttachment } from "react-icons/gr";
 import { PiDownloadSimpleLight } from "react-icons/pi";
 import { VscRefresh } from "react-icons/vsc";
@@ -271,16 +271,34 @@ export const RetryIcon = styled(VscRefresh)`
     height: 20px;
 `;
 
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+export const LoadingTitle = styled.p`
+  width: 100%;
+  color: #037060;
+  font-weight: 600;
+  /* font-size: clamp(1.1em, 1vh, 1.3em); */
+  font-size: 1.1em;
+`;
 
 export const LoadingWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1em;
+  margin-top: 5em;
+  /* gap: 1em; */
 `;
 
 export const LoadingIcon = styled(RiLoader2Line)`
   width: 50px;
   height: 50px;
-  animation: spin 1s linear infinite;
+  color: #037060;
+  animation: ${spin} 1s linear infinite;
 `;
