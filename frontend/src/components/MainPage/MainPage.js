@@ -42,7 +42,7 @@ const MainPage = () => {
     const [selectedGroupFile, setSelectedGroupFile] = useState(null);
     const [confirmationState, setConfirmationState] = useState(false);
     const [jobId, setJobId] = useState(null);
-    const BASE_URL = "http://localhost:8000";  
+    const BASE_URL = "http://192.168.254.20:8000";
 
     const handleSelectScheduleFile = () => {
         scheduleFileInputRef.current.click();
@@ -91,14 +91,14 @@ const MainPage = () => {
                 await axios.post(`${BASE_URL}/jobs/${jobId}/run`);
 
                 // Step 6: Download results
-                const downloadResponse = await axios.get(`${BASE_URL}/results/${job_id}/schedule/file`, { responseType: 'blob' });
+                const downloadResponse = await axios.get(`${BASE_URL}/results/${jobId}/schedule/file`, { responseType: 'blob' });
 
                 // Step 7: Save the downloaded file
                 const blob = new Blob([downloadResponse.data], { type: 'application/octet-stream' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `test-${job_id}.csv`;
+                a.download = `test-${jobId}.csv`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
@@ -112,7 +112,7 @@ const MainPage = () => {
                     // Axios specific error handling
                     console.error('Axios error details:', error.response);
                 }
-                
+
                 window.alert('An error occurred during the API calls.');
             }
         } else {
